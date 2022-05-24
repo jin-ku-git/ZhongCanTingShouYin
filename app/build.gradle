@@ -79,4 +79,7 @@ dependencies {
     implementation 'com.hyman:flowlayout-lib:1.1.2'
 
     implementation 'com.kyleduo.switchbutton:library:2.0.2'
+
+    //添加material库
+    implementation 'com.google.android.material:material:1.2.1'
 }

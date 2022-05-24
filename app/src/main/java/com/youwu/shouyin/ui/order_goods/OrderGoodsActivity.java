@@ -36,12 +36,14 @@ import com.youwu.shouyin.R;
 import com.youwu.shouyin.app.AppViewModelFactory;
 import com.youwu.shouyin.databinding.ActivityOrderGoodsBinding;
 import com.youwu.shouyin.databinding.ActivitySalesDocumentBinding;
+import com.youwu.shouyin.ui.main.bean.CommunityBean;
 import com.youwu.shouyin.ui.money.SalesDocumentViewModel;
 import com.youwu.shouyin.ui.money.adapter.SaleBillAdapter;
 import com.youwu.shouyin.ui.money.adapter.SalesAdapter;
 import com.youwu.shouyin.ui.money.bean.SaleBillBean;
 import com.youwu.shouyin.ui.order_goods.adapter.ApplyGoodsAdapter;
 import com.youwu.shouyin.ui.order_goods.adapter.OrderGoodsAdapter;
+import com.youwu.shouyin.ui.order_goods.bean.OrderGoodsBean;
 import com.youwu.shouyin.ui.order_goods.view.PlaceholderFragment;
 import com.youwu.shouyin.utils_view.DividerItemDecorations;
 import com.youwu.shouyin.utils_view.RxToast;
@@ -64,19 +66,17 @@ public class OrderGoodsActivity extends BaseActivity<ActivityOrderGoodsBinding, 
     //订单记录recyclerveiw的适配器
     private OrderGoodsAdapter mOrderGoodsAdapter;
     //定义以goodsentity实体类为对象的数据集合
-    private ArrayList<SaleBillBean> mSaleBillBeans = new ArrayList<>();
+    private ArrayList<OrderGoodsBean> mSaleBillBeans = new ArrayList<>();
 
     //订货记录详情recyclerveiw的适配器
     private ApplyGoodsAdapter mApplyGoodsAdapter;
     //定义以goodsentity实体类为对象的数据集合
-    private List<SaleBillBean.SaleBean> mSaleBeans = new ArrayList<>();
+    private ArrayList<CommunityBean> mCommunityBeanList = new ArrayList<>();
     int pageNo=1;
 
     private List<String> tabs = new ArrayList<>();
+    Bundle mBundle;
 
-    private TimePickerView pvCustomTime;//时间选择器
-
-    private int time_state;//1 开始 2 结束
     @Override
     public void initParam() {
         super.initParam();
@@ -107,16 +107,20 @@ public class OrderGoodsActivity extends BaseActivity<ActivityOrderGoodsBinding, 
             @Override
             public void onChanged(Integer integer) {
                 switch (integer){
-                    case 1:
-                        time_state=1;
-                        pvCustomTime.show(); //弹出自定义时间选择器
+                    case 1://复用订单
+                        mBundle = new Bundle();
+                        mBundle.putSerializable("mCommunityBeanList", mCommunityBeanList);//订货列表
+                        startActivity(NewOrderGoodsActivity.class,mBundle);
                         break;
                     case 2:
-                        time_state=2;
-                        pvCustomTime.show(); //弹出自定义时间选择器
+                        mBundle = new Bundle();
+                        mBundle.putSerializable("ShoppingEntityList", mCommunityBeanList);//订货列表
+                        mBundle.putString("goods_number", viewModel.goods_number.get());//订货数量
+                        mBundle.putString("goods_type", mCommunityBeanList.size()+"");//订货种类
+                        startActivity(ConfirmOrderActivity.class,mBundle);
                         break;
-                    case 3://反结帐
-
+                    case 5://反结帐
+                        RxToast.normal("打印");
                         break;
                 }
             }
@@ -176,13 +180,11 @@ public class OrderGoodsActivity extends BaseActivity<ActivityOrderGoodsBinding, 
     /**
      * 绑定
      */
-    private void initBinding(SaleBillBean saleBillBean) {
+    private void initBinding(OrderGoodsBean orderGoodsBean) {
 
+        viewModel.paid_in_prick.set(orderGoodsBean.getPaid_in_prick());//实收金额
 
-
-        viewModel.paid_in_prick.set(saleBillBean.getPaid_in_prick());//实收金额
-
-        viewModel.goods_num.set(saleBillBean.getGoods_num());//商品数量
+        viewModel.goods_number.set(orderGoodsBean.getGoods_num());//商品数量
     }
 
 
@@ -192,32 +194,32 @@ public class OrderGoodsActivity extends BaseActivity<ActivityOrderGoodsBinding, 
     private void initczjl() {
 
         for (int i=0;i<20;i++){
-            List<SaleBillBean.SaleBean> mSaleBeans = new ArrayList<>();
-            SaleBillBean saleBillBean=new SaleBillBean();
-            saleBillBean.setOrder_state("待配货"+i);//订单状态
-            saleBillBean.setOrder_state_num(1);//订单状态码
-            saleBillBean.setGoods_num("1"+i);//商品价格
-            saleBillBean.setCreate_time("2020.03.28 15:17:0"+i);//创建时间
+            ArrayList<CommunityBean> communityBeans = new ArrayList<>();
+            OrderGoodsBean orderGoodsBean=new OrderGoodsBean();
+            orderGoodsBean.setOrder_state("待配货"+i);//订单状态
+            orderGoodsBean.setOrder_state_num(1);//订单状态码
+            orderGoodsBean.setGoods_num("1"+i);//商品价格
+            orderGoodsBean.setCreate_time("2020.03.28 15:17:0"+i);//创建时间
 
-            saleBillBean.setPaid_in_prick("16"+i);//实收金额
+            orderGoodsBean.setPaid_in_prick("16"+i);//实收金额
 
-            saleBillBean.setGoods_list(mSaleBeans);
+            orderGoodsBean.setGoods_list(communityBeans);
 
             for (int j=0;j<5;j++){
-                SaleBillBean.SaleBean saleBean=new SaleBillBean.SaleBean();
-                saleBean.setGoods_name(i+"白菜");
-                saleBean.setGoods_number(i+"1"+j);
-                saleBean.setGoods_price(i+"2"+j);
-                saleBean.setGoods_discount(i+"3"+j);
-                saleBean.setTotal_price(i+"4"+j);
-                mSaleBeans.add(saleBean);
+                CommunityBean communityBean=new CommunityBean();
+                communityBean.setCom_name(i+"白菜"+j);
+                communityBean.setCom_number(i+j);
+                communityBean.setGoods_purchase_price(i+"2"+j);
+                communityBean.setCom_discount_price(i+"3"+j);
+                communityBean.setTotal_price(i+"4"+j);
+                communityBeans.add(communityBean);
             }
-            mSaleBillBeans.add(saleBillBean);
+            mSaleBillBeans.add(orderGoodsBean);
         }
         initBinding(mSaleBillBeans.get(0));
         initRecyclerView();
 
-        mSaleBeans=mSaleBillBeans.get(0).getGoods_list();
+        mCommunityBeanList=mSaleBillBeans.get(0).getGoods_list();
         initRecyclerViewTow();
     }
 
@@ -240,8 +242,8 @@ public class OrderGoodsActivity extends BaseActivity<ActivityOrderGoodsBinding, 
 
         mOrderGoodsAdapter.setOnClickListener(new OrderGoodsAdapter.OnClickListener() {
             @Override
-            public void onClick(SaleBillBean lists, int position) {
-                mSaleBeans=lists.getGoods_list();
+            public void onClick(OrderGoodsBean lists, int position) {
+                mCommunityBeanList=lists.getGoods_list();
                 initBinding(lists);
                 initRecyclerViewTow();
             }
@@ -254,7 +256,7 @@ public class OrderGoodsActivity extends BaseActivity<ActivityOrderGoodsBinding, 
      */
     private void initRecyclerViewTow() {
         //创建adapter
-        mApplyGoodsAdapter = new ApplyGoodsAdapter(this, mSaleBeans);
+        mApplyGoodsAdapter = new ApplyGoodsAdapter(this, mCommunityBeanList);
         //给RecyclerView设置adapter
         binding.xqRecyclerview.setAdapter(mApplyGoodsAdapter);
         //设置layoutManager,可以设置显示效果，是线性布局、grid布局，还是瀑布流布局

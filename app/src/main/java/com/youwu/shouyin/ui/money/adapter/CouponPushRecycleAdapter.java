@@ -1,30 +1,28 @@
-package com.youwu.shouyin.ui.money;
+package com.youwu.shouyin.ui.money.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.youwu.shouyin.R;
 import com.youwu.shouyin.ui.main.bean.CouponBean;
-import com.youwu.shouyin.ui.money.bean.VipRechargeBean;
+import com.youwu.shouyin.utils_view.RxToast;
 
 import java.util.List;
 
 
-public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeRecycleAdapter.myViewHodler> {
+public class CouponPushRecycleAdapter extends RecyclerView.Adapter<CouponPushRecycleAdapter.myViewHodler> {
     private Context context;
-    private List<VipRechargeBean> goodsEntityList;
+    private List<CouponBean> goodsEntityList;
     private int currentIndex = 0;
 
     //创建构造函数
-    public VipRechargeRecycleAdapter(Context context, List<VipRechargeBean> goodsEntityList) {
+    public CouponPushRecycleAdapter(Context context, List<CouponBean> goodsEntityList) {
         //将传递过来的数据，赋值给本地变量
         this.context = context;//上下文
         this.goodsEntityList = goodsEntityList;//实体类数据ArrayList
@@ -40,7 +38,7 @@ public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeR
     @Override
     public myViewHodler onCreateViewHolder(ViewGroup parent, int viewType) {
         //创建自定义布局
-        View itemView = View.inflate(context, R.layout.item_vip_recharge_layout, null);
+        View itemView = View.inflate(context, R.layout.item_coupon_push, null);
         return new myViewHodler(itemView);
     }
 
@@ -51,24 +49,33 @@ public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeR
      * @param position
      */
     @Override
-    public void onBindViewHolder(myViewHodler holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(final myViewHodler holder, @SuppressLint("RecyclerView") final int position) {
 
         //根据点击位置绑定数据
-        final VipRechargeBean data = goodsEntityList.get(position);
-        holder.bindData(goodsEntityList.get(position), position, currentIndex);
+        final CouponBean data = goodsEntityList.get(position);
+//        holder.bindData(goodsEntityList.get(position), position, currentIndex);
 
-        holder.recharge_content.setText(data.getRecharge_content());//获取实体类中的name字段并设置
-        holder.recharge_price.setText(data.getRecharge_price()+"");
-        if ("".equals(data.getRecharge_content())){
-            holder.bottom_layout.setVisibility(View.GONE);
-        }
-
-
+        holder.cou_name.setText(data.getName());//获取实体类中的name字段并设置
+        holder.cou_price.setText(data.getCou_money()+"");
+        holder.cou_time.setText("使用时间："+data.getStartTime()+"~"+data.getEndTime());
+        holder.img_choice.setVisibility(data.isSelect()?View.VISIBLE:View.GONE);
+        holder.tv_number.setText(data.cunpon_number+"");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setCurrentIndex(position);
+//                setCurrentIndex(position);
+
+                CouponBean item = goodsEntityList.get(position);
+                if (item.isSelect()) {
+                    item.setSelect(false);
+                } else {
+//                    for (int i = 0; i < goodsEntityList.size(); i++) {
+//                        goodsEntityList.get(i).setSelect(false);
+//                    }
+                    item.setSelect(true);
+                }
+                notifyDataSetChanged();
 
                 /**
                  * 选择的优惠券
@@ -77,6 +84,27 @@ public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeR
                     mCouPonListener.onCouPon(data,position);
                 }
 
+            }
+        });
+
+        //减
+        holder.iv_edit_subtract.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (data.cunpon_number==1){
+                    RxToast.normal("无法减少了");
+                }else {
+                    data.cunpon_number=data.cunpon_number-1;
+                    holder.tv_number.setText(data.cunpon_number+"");
+                }
+            }
+        });
+        //加
+        holder.iv_edit_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    data.cunpon_number=data.cunpon_number+1;
+                holder.tv_number.setText(data.cunpon_number+"");
             }
         });
 
@@ -100,24 +128,22 @@ public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeR
     //自定义viewhodler
     class myViewHodler extends RecyclerView.ViewHolder {
 
-        private TextView recharge_content;//
-        private TextView recharge_price;//充值金额
-        private RelativeLayout bottom_layout,relative_layout;
-
-        private TextView rmb;
-
+        private TextView cou_name,cou_price;//商品名称,商品价格
+        private TextView cou_time;//使用时间
+        private TextView tv_number;//数量
+        private ImageView img_choice,iv_edit_subtract,iv_edit_add;//
 
 
         public myViewHodler(View itemView) {
             super(itemView);
 
-
-            recharge_price = (TextView) itemView.findViewById(R.id.recharge_price);
-            rmb = (TextView) itemView.findViewById(R.id.rmb);
-            recharge_content = (TextView) itemView.findViewById(R.id.recharge_content);
-            bottom_layout = (RelativeLayout) itemView.findViewById(R.id.bottom_layout);
-            relative_layout = (RelativeLayout) itemView.findViewById(R.id.relative_layout);
-
+            cou_name = (TextView) itemView.findViewById(R.id.cou_name);
+            cou_price = (TextView) itemView.findViewById(R.id.cou_price);
+            cou_time = (TextView) itemView.findViewById(R.id.cou_time);
+            tv_number = (TextView) itemView.findViewById(R.id.tv_number);
+            img_choice = (ImageView) itemView.findViewById(R.id.img_choice);
+            iv_edit_subtract = (ImageView) itemView.findViewById(R.id.iv_edit_subtract);
+            iv_edit_add = (ImageView) itemView.findViewById(R.id.iv_edit_add);
 
             //点击事件放在adapter中使用，也可以写个接口在activity中调用
             //方法一：在adapter中设置点击事件
@@ -135,24 +161,18 @@ public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeR
 
 
         }
-        public void bindData(VipRechargeBean data, int position, int currentIndex) {
+        public void bindData(CouponBean data, int position, int currentIndex) {
             if (position == currentIndex) {
-                rmb.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.main_color));
-                recharge_price.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.main_color));
-                bottom_layout.setBackgroundResource(R.drawable.radius_blue_bottom_5dp);
-                relative_layout.setBackgroundResource(R.drawable.radius_white_blue_5dp);
+                img_choice.setVisibility(View.VISIBLE);
             } else {
-                rmb.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.main_black_85));
-                recharge_price.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.main_black_85));
-                relative_layout.setBackgroundResource(R.drawable.radius_white_5dp);
-                bottom_layout.setBackgroundResource(R.drawable.radius_hui_bottom_5dp);
+                img_choice.setVisibility(View.INVISIBLE);
             }
         }
     }
 
     //图片的监听的回调
     public interface OnCouPonListener {
-        void onCouPon(VipRechargeBean data, int position);
+        void onCouPon(CouponBean data, int position);
     }
 
     public void setOnCouPonListener(OnCouPonListener listener) {
@@ -173,7 +193,7 @@ public class VipRechargeRecycleAdapter extends RecyclerView.Adapter<VipRechargeR
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        public void OnItemClick(View view, VipRechargeBean data, int position);
+        public void OnItemClick(View view, CouponBean data, int position);
     }
 
     //需要外部访问，所以需要设置set方法，方便调用

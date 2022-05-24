@@ -13,7 +13,7 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 
 /**
- * 2022/03/21
+ * 2022/04/01
  */
 
 public class NewOrderGoodsViewModel extends BaseViewModel {

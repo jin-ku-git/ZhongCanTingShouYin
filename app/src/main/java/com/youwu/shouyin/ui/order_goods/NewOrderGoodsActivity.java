@@ -110,6 +110,13 @@ public class NewOrderGoodsActivity extends BaseActivity<ActivityNewOrderGoodsBin
     public void initParam() {
         super.initParam();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        //获取列表传入的实体
+        ArrayList<CommunityBean>  ShoppingList= (ArrayList<CommunityBean>) getIntent().getSerializableExtra("mCommunityBeanList");
+
+        if (ShoppingList!=null){
+            ShoppingEntityList=ShoppingList;
+        }
+
     }
 
     @Override
@@ -190,6 +197,12 @@ public class NewOrderGoodsActivity extends BaseActivity<ActivityNewOrderGoodsBin
          * 模拟数据
          */
         initCommunit();
+
+        if (ShoppingEntityList!=null){
+            //更新UI
+            updateView();
+        }
+
 
 
 
@@ -379,13 +392,16 @@ public class NewOrderGoodsActivity extends BaseActivity<ActivityNewOrderGoodsBin
      */
     private void addUpShopping(CommunityBean data) {
         int hasInShopCar = -1;
-        for (int i=0;i<ShoppingEntityList.size();i++){
-            if (data.getId()==ShoppingEntityList.get(i).getId()){
-                //如果是修改直接中断循环
-                hasInShopCar = i;
-                break;
+
+            for (int i=0;i<ShoppingEntityList.size();i++){
+                if (data.getId()==ShoppingEntityList.get(i).getId()){
+                    //如果是修改直接中断循环
+                    hasInShopCar = i;
+                    break;
+                }
             }
-        }
+
+
         if (hasInShopCar == -1) {
             ShoppingEntityList.add(data);
         }else {

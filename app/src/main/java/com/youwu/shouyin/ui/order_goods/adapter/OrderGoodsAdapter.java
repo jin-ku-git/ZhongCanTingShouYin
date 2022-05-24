@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.youwu.shouyin.R;
 import com.youwu.shouyin.ui.money.bean.SaleBillBean;
+import com.youwu.shouyin.ui.order_goods.bean.OrderGoodsBean;
 
 import java.util.List;
 
@@ -19,11 +20,11 @@ import java.util.List;
  */
 public class OrderGoodsAdapter extends RecyclerView.Adapter<OrderGoodsAdapter.myViewHodler> {
     private Context context;
-    private List<SaleBillBean> rechargeBeans;
+    private List<OrderGoodsBean> rechargeBeans;
     private int currentIndex = 0;
 
     //创建构造函数
-    public OrderGoodsAdapter(Context context, List<SaleBillBean> goodsEntityList) {
+    public OrderGoodsAdapter(Context context, List<OrderGoodsBean> goodsEntityList) {
         //将传递过来的数据，赋值给本地变量
         this.context = context;//上下文
         this.rechargeBeans = goodsEntityList;//实体类数据ArrayList
@@ -53,7 +54,7 @@ public class OrderGoodsAdapter extends RecyclerView.Adapter<OrderGoodsAdapter.my
     public void onBindViewHolder(final myViewHodler holder, @SuppressLint("RecyclerView") final int position) {
 
         //根据点击位置绑定数据
-        SaleBillBean data = rechargeBeans.get(position);
+        OrderGoodsBean data = rechargeBeans.get(position);
 
         holder.bindData(rechargeBeans.get(position), position, currentIndex);
 
@@ -130,7 +131,7 @@ public class OrderGoodsAdapter extends RecyclerView.Adapter<OrderGoodsAdapter.my
             });
         }
 
-        public void bindData(SaleBillBean saleBillBean, int position, int currentIndex) {
+        public void bindData(OrderGoodsBean saleBillBean, int position, int currentIndex) {
             if (position == currentIndex) {
 
                 mView.setVisibility(View.VISIBLE);
@@ -147,7 +148,7 @@ public class OrderGoodsAdapter extends RecyclerView.Adapter<OrderGoodsAdapter.my
 
     //删除的监听的回调
     public interface OnClickListener {
-        void onClick(SaleBillBean lists, int position);
+        void onClick(OrderGoodsBean lists, int position);
     }
 
     public void setOnClickListener(OnClickListener listener) {
@@ -168,7 +169,7 @@ public class OrderGoodsAdapter extends RecyclerView.Adapter<OrderGoodsAdapter.my
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        public void OnItemClick(View view, SaleBillBean data, int position);
+        public void OnItemClick(View view, OrderGoodsBean data, int position);
     }
 
     //需要外部访问，所以需要设置set方法，方便调用

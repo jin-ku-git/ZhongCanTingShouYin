@@ -29,7 +29,7 @@ import me.goldze.mvvmhabit.utils.KLog;
  */
 public class SouSuoVipActivity extends BaseActivity<ActivitySouSuoVipBinding, SouSuoVipViewModel> {
 
-    private int type;
+    private int type;//1 搜索会员 2 显示会员信息
     Intent intent;
     @Override
     public void initParam() {
@@ -85,6 +85,9 @@ public class SouSuoVipActivity extends BaseActivity<ActivitySouSuoVipBinding, So
                     case 2://充值
                             startActivity(VipRechargeActivity.class);
                         break;
+                    case 3://搜索
+                        viewModel.vip_details_state.set(true);
+                        break;
                 }
             }
         });
@@ -96,9 +99,17 @@ public class SouSuoVipActivity extends BaseActivity<ActivitySouSuoVipBinding, So
         super.initData();
         hideBottomUIMenu();
         viewModel.type_state.set(type);
+        if (type==1){
+            viewModel.vip_details_state.set(false);
+        }else {
+            viewModel.vip_details_state.set(true);
+        }
         viewModel.vip_name.set("清风拂杨柳");
         viewModel.vip_tel.set("15811112223");
         viewModel.vip_money.set("99");
+
+
+
 
     }
 }

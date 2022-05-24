@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.youwu.shouyin.app.UserUtils;
 import com.youwu.shouyin.data.DemoRepository;
-import com.youwu.shouyin.ui.main.DemoActivity;
+import com.youwu.shouyin.ui.main.MainActivity;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
@@ -118,7 +118,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
                         UserUtils.setLogoTime(time);
                         UserUtils.setLogoName("小花");
                         //进入DemoActivity页面
-                        startActivity(DemoActivity.class);
+                        startActivity(MainActivity.class);
                         //关闭页面
                         finish();
                     }

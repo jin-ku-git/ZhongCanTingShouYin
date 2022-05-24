@@ -4,29 +4,27 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.youwu.shouyin.R;
 import com.youwu.shouyin.ui.main.bean.CommunityBean;
-import com.youwu.shouyin.ui.money.bean.SaleBillBean;
 
 import java.util.List;
 
-/**
- * 订货申请适配器
- */
-public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.myViewHodler> {
+
+public class OrderSettlementRecycleAdapter extends RecyclerView.Adapter<OrderSettlementRecycleAdapter.myViewHodler> {
     private Context context;
-    private List<CommunityBean> rechargeBeans;
+    private List<CommunityBean> goodsEntityList;
     private int currentIndex = 0;
 
     //创建构造函数
-    public ApplyGoodsAdapter(Context context, List<CommunityBean> goodsEntityList) {
+    public OrderSettlementRecycleAdapter(Context context, List<CommunityBean> goodsEntityList) {
         //将传递过来的数据，赋值给本地变量
         this.context = context;//上下文
-        this.rechargeBeans = goodsEntityList;//实体类数据ArrayList
+        this.goodsEntityList = goodsEntityList;//实体类数据ArrayList
     }
 
     /**
@@ -39,7 +37,7 @@ public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.my
     @Override
     public myViewHodler onCreateViewHolder(ViewGroup parent, int viewType) {
         //创建自定义布局
-        View itemView = View.inflate(context, R.layout.item_apply_goods_layout, null);
+        View itemView = View.inflate(context, R.layout.item_order_settlement_layout, null);
         return new myViewHodler(itemView);
     }
 
@@ -53,13 +51,35 @@ public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.my
     public void onBindViewHolder(final myViewHodler holder, @SuppressLint("RecyclerView") final int position) {
 
         //根据点击位置绑定数据
-        CommunityBean data = rechargeBeans.get(position);
+        final CommunityBean data = goodsEntityList.get(position);
 //        holder.mItemGoodsImg;
-        holder.goods_name.setText(data.getCom_name());//商品名称
-        holder.goods_number.setText(data.getCom_number()+"");//订货数量
-        holder.goods_price.setText(data.getGoods_purchase_price());//商品单价
-        holder.total_price.setText(data.getTotal_price());//小计
+        holder.tv_name.setText(data.getCom_name());//获取实体类中的name字段并设置
 
+        holder.tv_number.setText("数量："+data.getCom_number());
+        holder.subtotal_price.setText(data.getTotal_price());
+
+
+        //添加editText的监听事件
+//        holder.tv_number.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//                if (!"".equals(s.toString())){
+//                    data.setCom_number(Integer.parseInt(s.toString()));
+//                    /**
+//                     * 加操作
+//                     */
+//                    if (mChangeListener != null) {
+//                        mChangeListener.onChange(data,position);
+//                    }
+//                }
+//
+//            }
+//        });
 
 
     }
@@ -76,15 +96,15 @@ public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.my
      */
     @Override
     public int getItemCount() {
-        return rechargeBeans.size();
+        return goodsEntityList.size();
     }
 
     //自定义viewhodler
     class myViewHodler extends RecyclerView.ViewHolder {
 
-        private TextView goods_name,goods_number;//商品名称，订货数量
-        private TextView goods_price;//订货单价
-        private TextView total_price;//小计
+        private TextView tv_name;//商品名称，商品价格
+        private TextView tv_number;//商品数量
+        private TextView subtotal_price;//小计
 
 
 
@@ -93,10 +113,10 @@ public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.my
         public myViewHodler(View itemView) {
             super(itemView);
 
-            goods_name = (TextView) itemView.findViewById(R.id.goods_name);
-            goods_number = (TextView) itemView.findViewById(R.id.goods_number);
-            goods_price = (TextView) itemView.findViewById(R.id.goods_price);
-            total_price = (TextView) itemView.findViewById(R.id.total_price);
+            tv_name = (TextView) itemView.findViewById(R.id.tv_name);
+
+            tv_number = (TextView) itemView.findViewById(R.id.tv_number);
+            subtotal_price = (TextView) itemView.findViewById(R.id.subtotal_price);
 
 
 
@@ -110,7 +130,7 @@ public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.my
                     //Toast.makeText(context,"点击了xxx",Toast.LENGTH_SHORT).show();
                     //此处回传点击监听事件
                     if(onItemClickListener!=null){
-                        onItemClickListener.OnItemClick(v, rechargeBeans.get(getLayoutPosition()),getLayoutPosition());
+                        onItemClickListener.OnItemClick(v, goodsEntityList.get(getLayoutPosition()),getLayoutPosition());
                     }
                 }
             });
@@ -121,9 +141,10 @@ public class ApplyGoodsAdapter extends RecyclerView.Adapter<ApplyGoodsAdapter.my
     }
 
 
+
     //删除的监听的回调
     public interface OnDeleteListener {
-        void onDelete(SaleBillBean.SaleBean lists, int position);
+        void onDelete(CommunityBean lists, int position);
     }
 
     public void setOnDeleteListener(OnDeleteListener listener) {

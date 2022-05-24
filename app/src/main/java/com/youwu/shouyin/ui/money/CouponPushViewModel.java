@@ -1,66 +1,60 @@
-package com.youwu.shouyin.ui.order_goods;
+package com.youwu.shouyin.ui.money;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+
 import androidx.databinding.ObservableField;
 
+
+import com.youwu.shouyin.BR;
+import com.youwu.shouyin.R;
 import com.youwu.shouyin.data.DemoRepository;
-import com.youwu.shouyin.utils_view.RxToast;
+
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 
+
 /**
- * 2022/04/02
+ * 2022/04/04
  */
 
-public class ConfirmOrderViewModel extends BaseViewModel<DemoRepository> {
+public class CouponPushViewModel extends BaseViewModel<DemoRepository> {
 
-
-
-    //备注的绑定
-    public ObservableField<String> remarks_content = new ObservableField<>("");
-
-    //实收金额的绑定
-    public ObservableField<String> paid_in_prick = new ObservableField<>("");
-    //订货数的绑定
-    public ObservableField<String> order_number = new ObservableField<>("");
-    //商品种类的绑定
-    public ObservableField<String> goods_type = new ObservableField<>("");
-
-
+    //用户名手机号的绑定
+    public ObservableField<String> vip_tel = new ObservableField<>("");
+    //用户名的绑定
+    public ObservableField<String> vip_name = new ObservableField<>("");
+    //用户名余额的绑定
+    public ObservableField<String> vip_money = new ObservableField<>("");
 
     //使用LiveData
     public SingleLiveEvent<Integer> IntegerEvent = new SingleLiveEvent<>();
 
-
-    public ConfirmOrderViewModel(@NonNull Application application, DemoRepository repository) {
+    public CouponPushViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
-        //从本地取得数据绑定到View层
+
     }
+
 
 
     //返回的点击事件
     public BindingCommand returnOnClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            finish();
+           finish();
         }
     });
-
-    //确认收货的点击事件
-    public BindingCommand ReceivingOnClick = new BindingCommand(new BindingAction() {
+    //确认推送的点击事件
+    public BindingCommand PushOnClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-
             IntegerEvent.setValue(1);
         }
     });
-
-
 
 
 

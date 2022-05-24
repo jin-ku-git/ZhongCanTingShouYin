@@ -19,7 +19,7 @@ import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
  * 2022/03/21
  */
 
-public class DemoViewModel extends BaseViewModel {
+public class MainViewModel extends BaseViewModel {
 
 
     //使用LiveData
@@ -40,7 +40,7 @@ public class DemoViewModel extends BaseViewModel {
     public ObservableField<String> discount_prick = new ObservableField<>("");
 
 
-    public DemoViewModel(@NonNull Application application, DemoRepository repository) {
+    public MainViewModel(@NonNull Application application, DemoRepository repository) {
         super(application,repository);
     }
     //添加会员的点击事件
@@ -129,6 +129,14 @@ public class DemoViewModel extends BaseViewModel {
         @Override
         public void call() {
             IntegerEvent.setValue(13);
+        }
+    });
+
+    //订单的点击事件
+    public BindingCommand takeFoodOnClick = new BindingCommand(new BindingAction() {
+        @Override
+        public void call() {
+            IntegerEvent.setValue(14);
         }
     });
 

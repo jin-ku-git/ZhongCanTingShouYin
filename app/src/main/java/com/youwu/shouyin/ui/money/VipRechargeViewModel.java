@@ -27,6 +27,8 @@ public class VipRechargeViewModel extends BaseViewModel<DemoRepository> {
     public ObservableField<Boolean> custom_bool = new ObservableField<>();
     //Top标题
     public ObservableField<String> TOP_TITLE = new ObservableField<>("会员充值");
+    //自定义金额
+    public ObservableField<String> Custom_price = new ObservableField<>("");
 
 
     public VipRechargeViewModel(@NonNull Application application, DemoRepository repository) {

@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.youwu.shouyin.ui.main.DemoActivity"/>
+        <activity android:name="com.youwu.shouyin.ui.main.MainActivity"/>
         <activity android:name="com.youwu.shouyin.ui.tab_bar.activity.TabBarActivity"/>
         <activity android:name="com.youwu.shouyin.ui.viewpager.activity.ViewPagerActivity"/>
         <activity android:name="com.youwu.shouyin.ui.vip.SouSuoVipActivity"/>
@@ -35,12 +35,14 @@
         <activity android:name="com.youwu.shouyin.ui.money.CashierActivity"/>
         <activity android:name="com.youwu.shouyin.ui.money.VipRechargeActivity"/>
         <activity android:name="com.youwu.shouyin.ui.money.SalesDocumentActivity"/>
+        <activity android:name="com.youwu.shouyin.ui.money.CouponPushActivity"/>
         <activity android:name="com.youwu.shouyin.ui.vip.AddVipActivity"/>
         <activity android:name="com.youwu.shouyin.ui.handover.HandoverActivity"/>
         <activity android:name="com.youwu.shouyin.ui.handover.SaleGoodsListActivity"/>
         <activity android:name="com.youwu.shouyin.ui.order_goods.OrderGoodsActivity"/>
         <activity android:name="com.youwu.shouyin.ui.order_goods.NewOrderGoodsActivity"/>
         <activity android:name="com.youwu.shouyin.ui.order_goods.ConfirmOrderActivity"/>
+        <activity android:name="com.youwu.shouyin.ui.order_goods.OrderSettlementActivity"/>
     </application>
 
 </manifest>

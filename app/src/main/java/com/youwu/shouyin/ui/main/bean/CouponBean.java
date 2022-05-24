@@ -14,9 +14,17 @@ public class CouponBean implements Serializable {
     private String startTime;//开始时间
     private String endTime;//结束事件
     private String type;//优惠券类型
+    public int cunpon_number;//优惠券数量
     private boolean select = false;
     private double cou_money;//优惠金额
 
+    public int getCunpon_number() {
+        return cunpon_number;
+    }
+
+    public void setCunpon_number(int cunpon_number) {
+        this.cunpon_number = cunpon_number;
+    }
 
     public boolean isSelect() {
         return select;

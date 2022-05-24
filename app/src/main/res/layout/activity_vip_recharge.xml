@@ -117,21 +117,6 @@
 
             </LinearLayout>
 
-            <!-- 键盘 -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/size_10dp"
-                android:layout_weight="1"
-                android:visibility="gone">
-
-                <com.youwu.shouyin.jianpan.MyCustKeybords
-                    android:id="@+id/custom_keyboard"
-                    android:layout_width="600dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    app:needSystem="false" />
-            </FrameLayout>
 
 
         </LinearLayout>
@@ -146,6 +131,7 @@
             android:visibility="@{viewModel.custom_bool==true?View.VISIBLE:View.GONE}"
             >
             <LinearLayout
+                android:id="@+id/zdy_top_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_123dp"
@@ -179,6 +165,7 @@
                         android:layout_alignParentBottom="true"
                         />
                     <EditText
+                        android:id="@+id/money_cz"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/size_50dp"
                         android:background="@null"
@@ -189,6 +176,7 @@
                         android:textColor="@color/main_color"
                         android:textColorHint="@color/textColorHint"
                         android:textSize="35sp"
+                        android:text="@={viewModel.Custom_price}"
                         android:textStyle="bold"
                         android:layout_toRightOf="@id/rmb"
                         android:layout_marginLeft="@dimen/size_5dp"
@@ -205,6 +193,32 @@
                 </RelativeLayout>
 
             </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_123dp"
+                android:layout_marginEnd="@dimen/size_123dp"
+                android:layout_marginTop="@dimen/size_25dp"
+                android:layout_below="@+id/zdy_top_layout"
+                android:background="@drawable/radius_white_5dp"
+                android:padding="@dimen/size_15dp"
+                >
+                <!-- 键盘 -->
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/size_10dp">
+
+                    <com.youwu.shouyin.jianpan.MyCustKeybords
+                        android:id="@+id/custom_keyboard"
+                        android:layout_width="600dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        app:needSystem="false" />
+                </FrameLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

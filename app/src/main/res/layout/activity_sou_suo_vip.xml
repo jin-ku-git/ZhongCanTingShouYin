@@ -111,6 +111,12 @@
                 binding:onClickCommand="@{viewModel.SouSuoOnClick}"
                 />
         </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.vip_details_state?View.VISIBLE:View.GONE}"
+                >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -175,7 +181,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@={viewModel.vip_tel}"
+                        android:text="@{viewModel.vip_tel}"
                         android:textSize="@dimen/text_15sp"
                         android:textColor="@color/main_black"
 
@@ -322,6 +328,9 @@
                     android:layout_marginEnd="@dimen/size_5dp"
                     binding:onClickCommand="@{viewModel.ChoiceOnClick}"
                     />
+
+            </LinearLayout>
+
 
             </LinearLayout>
 

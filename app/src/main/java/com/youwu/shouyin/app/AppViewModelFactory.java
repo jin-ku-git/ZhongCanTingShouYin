@@ -7,7 +7,8 @@ import com.youwu.shouyin.data.DemoRepository;
 import com.youwu.shouyin.ui.handover.HandoverViewModel;
 import com.youwu.shouyin.ui.handover.SaleGoodsListViewModel;
 import com.youwu.shouyin.ui.login.LoginViewModel;
-import com.youwu.shouyin.ui.main.DemoViewModel;
+import com.youwu.shouyin.ui.main.MainViewModel;
+import com.youwu.shouyin.ui.money.CouponPushViewModel;
 import com.youwu.shouyin.ui.money.SalesDocumentViewModel;
 import com.youwu.shouyin.ui.money.CashierViewModel;
 import com.youwu.shouyin.ui.money.RechargeRecordViewModel;
@@ -16,6 +17,7 @@ import com.youwu.shouyin.ui.network.NetWorkViewModel;
 import com.youwu.shouyin.ui.order_goods.ConfirmOrderViewModel;
 import com.youwu.shouyin.ui.order_goods.NewOrderGoodsViewModel;
 import com.youwu.shouyin.ui.order_goods.OrderGoodsViewModel;
+import com.youwu.shouyin.ui.order_goods.OrderSettlementViewModel;
 import com.youwu.shouyin.ui.set_up.SetUpViewModel;
 import com.youwu.shouyin.ui.vip.AddVipViewModel;
 import com.youwu.shouyin.ui.vip.SouSuoVipViewModel;
@@ -62,8 +64,8 @@ public class AppViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new NetWorkViewModel(mApplication, mRepository);
         } else if (modelClass.isAssignableFrom(LoginViewModel.class)) {//登录
             return (T) new LoginViewModel(mApplication, mRepository);
-        } else if (modelClass.isAssignableFrom(DemoViewModel.class)) {//首页
-            return (T) new DemoViewModel(mApplication, mRepository);
+        } else if (modelClass.isAssignableFrom(MainViewModel.class)) {//首页
+            return (T) new MainViewModel(mApplication, mRepository);
         } else if (modelClass.isAssignableFrom(SouSuoVipViewModel.class)) {//搜索VIP
             return (T) new SouSuoVipViewModel(mApplication, mRepository);
         }else if (modelClass.isAssignableFrom(SetUpViewModel.class)) {//通用设置
@@ -88,6 +90,10 @@ public class AppViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new NewOrderGoodsViewModel(mApplication, mRepository);
         }else if (modelClass.isAssignableFrom(ConfirmOrderViewModel.class)) {//确认订货
             return (T) new ConfirmOrderViewModel(mApplication, mRepository);
+        }else if (modelClass.isAssignableFrom(OrderSettlementViewModel.class)) {//订货结算
+            return (T) new OrderSettlementViewModel(mApplication, mRepository);
+        }else if (modelClass.isAssignableFrom(CouponPushViewModel.class)) {//优惠券推送
+            return (T) new CouponPushViewModel(mApplication, mRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

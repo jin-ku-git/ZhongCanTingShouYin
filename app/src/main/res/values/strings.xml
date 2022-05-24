@@ -6,4 +6,5 @@
 
     <string name="vip_details">会员信息</string>
     <string name="vip_search">搜索会员</string>
+    <string name="main_null"></string>
 </resources>

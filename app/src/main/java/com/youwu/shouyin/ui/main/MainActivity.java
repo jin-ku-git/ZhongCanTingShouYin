@@ -1,21 +1,17 @@
 package com.youwu.shouyin.ui.main;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -24,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +29,6 @@ import com.youwu.shouyin.R;
 import com.youwu.shouyin.app.AppApplication;
 import com.youwu.shouyin.app.AppViewModelFactory;
 import com.youwu.shouyin.databinding.ActivityDemoBinding;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.youwu.shouyin.jianpan.MyCustKeybords;
 import com.youwu.shouyin.ui.bean.VipBean;
 import com.youwu.shouyin.ui.handover.HandoverActivity;
@@ -55,12 +49,9 @@ import com.youwu.shouyin.ui.vip.SouSuoVipActivity;
 import com.youwu.shouyin.util.ScanUtils;
 import com.youwu.shouyin.utils_view.BigDecimalUtils;
 import com.youwu.shouyin.utils_view.DividerItemDecorations;
-import com.youwu.shouyin.utils_view.EditTextUtils;
-import com.youwu.shouyin.utils_view.KeybordUtil;
 import com.youwu.shouyin.utils_view.RxToast;
-import com.youwu.shouyin.utils_view.StatusBarUtil;
 
-import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -72,17 +63,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.KLog;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * 首页
  * 2022/03/21
  */
 
-public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewModel> implements ScanUtils.OnResultListener{
+public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewModel> implements ScanUtils.OnResultListener{
 
     //分类recyclerveiw的适配器
     private CommunityRecycleAdapter mCommunityRecycleAdapter;
@@ -123,10 +112,10 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
     }
 
     @Override
-    public DemoViewModel initViewModel() {
+    public MainViewModel initViewModel() {
         //使用自定义的ViewModelFactory来创建ViewModel，如果不重写该方法，则默认会调用LoginViewModel(@NonNull Application application)构造方法
         AppViewModelFactory factory = AppViewModelFactory.getInstance(getApplication());
-        return ViewModelProviders.of(this, factory).get(DemoViewModel.class);
+        return ViewModelProviders.of(this, factory).get(MainViewModel.class);
     }
 
     @Override
@@ -163,19 +152,19 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
                         break;
 
                     case 7://跳转到选择会员
-                        intent = new Intent(DemoActivity.this, SouSuoVipActivity.class);
+                        intent = new Intent(MainActivity.this, SouSuoVipActivity.class);
                         intent.putExtra("type",1);
                         startActivityForResult(intent,200);
                         break;
                     case 8://显示搜索
                         Animation topAnim = AnimationUtils.loadAnimation(
-                                DemoActivity.this, R.anim.activity_down_in);
+                                MainActivity.this, R.anim.activity_down_in);
                         //切换特效
                         binding.sousuoLayout.startAnimation(topAnim);
                         break;
                     case 9://关闭搜索
                             Animation topAnimTow = AnimationUtils.loadAnimation(
-                                    DemoActivity.this, R.anim.activity_down_out);
+                                    MainActivity.this, R.anim.activity_down_out);
                             //切换特效
                             binding.sousuoLayout.startAnimation(topAnimTow);
                         break;
@@ -195,7 +184,7 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
                         showCouponDialog();
                         break;
                     case 12://点击vip信息
-                             intent = new Intent(DemoActivity.this, SouSuoVipActivity.class);
+                             intent = new Intent(MainActivity.this, SouSuoVipActivity.class);
                             intent.putExtra("type",2);
                             startActivityForResult(intent,200);
                         break;
@@ -209,6 +198,11 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
                             mBundle.putString("discount_price", viewModel.discount_prick.get());
                             startActivity(CashierActivity.class,mBundle);
                         }
+
+                        break;
+                        //侧边栏
+                    case 14:
+                        binding.drawerLayout.openDrawer(GravityCompat.START);
 
                         break;
 
@@ -227,6 +221,9 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
         setSwipeBackEnable(false);
         viewModel.sou_suo_bool.set(false);//默认不显示搜索
         viewModel.vip_bool.set(false);//默认没选择会员
+
+        initDrawerLayout();
+
         /**
          * 模拟数据
          */
@@ -261,6 +258,11 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
 
             }
         });
+    }
+    //初始化侧滑栏
+    private void initDrawerLayout() {
+        //获取头部视图
+        View headerView = binding.navView.getHeaderView(0);
     }
 
     /**
@@ -968,6 +970,9 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
         coupon_recycler.setAdapter(mCouponListRecycleAdapter);
         //设置layoutManager,可以设置显示效果，是线性布局、grid布局，还是瀑布流布局
 
+        coupon_recycler.setScrollbarFadingEnabled(false);
+        coupon_recycler.setScrollBarFadeDuration(0);
+
         //参数是：上下文、列表方向（横向还是纵向）、是否倒叙
         coupon_recycler.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         //设置item的分割线
@@ -986,10 +991,10 @@ public class DemoActivity extends BaseActivity<ActivityDemoBinding, DemoViewMode
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (ScanUtils.getInstance().isInputFromScanner(DemoActivity.this, event)) {
+        if (ScanUtils.getInstance().isInputFromScanner(MainActivity.this, event)) {
 
             //暂时取消扫码
-            ScanUtils.getInstance().setOnResultListener(DemoActivity.this);
+            ScanUtils.getInstance().setOnResultListener(MainActivity.this);
             ScanUtils.getInstance().analysisKeyEvent(event);
         }
         return super.dispatchKeyEvent(event);

@@ -9,8 +9,8 @@ public class VipRechargeBean implements Serializable {
 
 
     private String id;
-    private String recharge_prick;
-    private String recharge_content;
+    private String recharge_price;//充值金额
+    private String recharge_content;//赠送内容
 
     public String getId() {
         return id;
@@ -20,12 +20,12 @@ public class VipRechargeBean implements Serializable {
         this.id = id;
     }
 
-    public String getRecharge_prick() {
-        return recharge_prick;
+    public String getRecharge_price() {
+        return recharge_price;
     }
 
-    public void setRecharge_prick(String recharge_prick) {
-        this.recharge_prick = recharge_prick;
+    public void setRecharge_price(String recharge_price) {
+        this.recharge_price = recharge_price;
     }
 
     public String getRecharge_content() {

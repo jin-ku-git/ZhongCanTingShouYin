@@ -91,4 +91,9 @@
     <declare-styleable name="MyCustKeybords">
         <attr name="needSystem" format="boolean" />
     </declare-styleable>
+
+    <!--menu文字样式-->
+    <style name="MenuTextStyle">
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

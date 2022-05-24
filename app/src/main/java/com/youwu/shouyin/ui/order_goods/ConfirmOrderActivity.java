@@ -99,8 +99,18 @@ public class ConfirmOrderActivity extends BaseActivity<ActivityConfirmOrderBindi
             @Override
             public void onChanged(Integer integer) {
                 switch (integer){
-                    case 1:
+                    case 1://确认收货
+                        if (GoodsEntityList.size()==0){
+                            RxToast.normal("请选择商品!");
+                        }else {
 
+                            Bundle mBundle = new Bundle();
+                            mBundle.putSerializable("GoodsEntityList", GoodsEntityList);//订货列表
+                            mBundle.putString("goods_number", viewModel.order_number.get());//订货数量
+                            mBundle.putString("goods_type", viewModel.goods_type.get());//订货种类
+                            mBundle.putString("paid_in_prick", viewModel.paid_in_prick.get());//总金额
+                            startActivity(OrderSettlementActivity.class,mBundle);
+                        }
                         break;
                     case 2:
 

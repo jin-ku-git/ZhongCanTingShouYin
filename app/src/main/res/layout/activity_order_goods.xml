@@ -317,6 +317,7 @@
                                 android:paddingTop="@dimen/size_10dp"
                                 android:paddingBottom="@dimen/size_10dp"
                                 android:layout_marginRight="13dp"
+                                binding:onClickCommand="@{viewModel.FYOrderOnClick}"
                                 />
                             <TextView
                                 android:layout_width="wrap_content"
@@ -329,6 +330,7 @@
                                 android:paddingLeft="@dimen/size_30dp"
                                 android:paddingTop="@dimen/size_10dp"
                                 android:paddingBottom="@dimen/size_10dp"
+                                binding:onClickCommand="@{viewModel.ResubmitOnClick}"
                                 />
                         </LinearLayout>
 
@@ -351,6 +353,7 @@
                                 android:paddingTop="@dimen/size_10dp"
                                 android:paddingBottom="@dimen/size_10dp"
                                 android:layout_marginRight="13dp"
+                                binding:onClickCommand="@{viewModel.UpdateOrderOnClick}"
                                 />
                             <TextView
                                 android:layout_width="wrap_content"
@@ -363,6 +366,7 @@
                                 android:paddingLeft="@dimen/size_30dp"
                                 android:paddingTop="@dimen/size_10dp"
                                 android:paddingBottom="@dimen/size_10dp"
+                                binding:onClickCommand="@{viewModel.CancelOrderOnClick}"
                                 />
                         </LinearLayout>
                     </LinearLayout>
@@ -460,7 +464,7 @@
                                         android:id="@+id/pay_mode"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@{viewModel.goods_num}"
+                                        android:text="@{viewModel.goods_number}"
                                         android:textSize="@dimen/text_14sp"
                                         android:textColor="@color/main_black_54"
                                         />

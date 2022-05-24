@@ -45,6 +45,7 @@
         android:overScrollMode="never"
         android:layout_marginTop="@dimen/size_33dp"
         android:layout_weight="1"
+        android:scrollbars="vertical"
         />
 
 

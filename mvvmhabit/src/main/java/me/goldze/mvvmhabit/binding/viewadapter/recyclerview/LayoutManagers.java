@@ -80,6 +80,17 @@ public class LayoutManagers {
             }
         };
     }
+    /**
+     * A {@link LinearLayoutManager}.
+     */
+    public static LayoutManagerFactory typeHCount_2() {
+        return new LayoutManagerFactory() {
+            @Override
+            public RecyclerView.LayoutManager create(RecyclerView recyclerView) {
+                return new GridLayoutManager(recyclerView.getContext(), 2);
+            }
+        };
+    }
 
     @IntDef({LinearLayoutManager.HORIZONTAL, LinearLayoutManager.VERTICAL})
     @Retention(RetentionPolicy.SOURCE)
