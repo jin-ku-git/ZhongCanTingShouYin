@@ -104,7 +104,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
             return;
         }
         if (TextUtils.isEmpty(password.get())) {
-            ToastUtils.showShort("请输入密码！");
+            ToastUtils.showShort("请输入1111密码！");
             return;
         }
         //跳转到首页
