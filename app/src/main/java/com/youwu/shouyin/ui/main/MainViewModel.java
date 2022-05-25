@@ -7,19 +7,38 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import com.youwu.shouyin.data.DemoRepository;
+import com.youwu.shouyin.ui.main.bean.GroupBean;
 import com.youwu.shouyin.ui.vip.SouSuoVipActivity;
+import com.youwu.shouyin.utils_view.RxToast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.http.BaseBean;
+import me.goldze.mvvmhabit.http.ResponseThrowable;
+import me.goldze.mvvmhabit.utils.RxUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
+
+import static com.youwu.shouyin.app.AppApplication.toPrettyFormat;
+import static me.goldze.mvvmhabit.base.BaseActivity.finishAllActivity;
 
 /**
  * 2022/03/21
  */
 
-public class MainViewModel extends BaseViewModel {
+public class MainViewModel extends BaseViewModel<DemoRepository> {
 
 
     //使用LiveData
@@ -39,6 +58,8 @@ public class MainViewModel extends BaseViewModel {
     //优惠金额的绑定
     public ObservableField<String> discount_prick = new ObservableField<>("");
 
+    //商品群组列表
+    public SingleLiveEvent<ArrayList<GroupBean>> groupList = new SingleLiveEvent<>();
 
     public MainViewModel(@NonNull Application application, DemoRepository repository) {
         super(application,repository);
@@ -140,4 +161,91 @@ public class MainViewModel extends BaseViewModel {
         }
     });
 
+
+    /**
+     * 获取群组
+     * @param store_id 门店id
+     */
+    public void getGoodsGroup(String store_id){
+
+        model.GOODS_GROUP(store_id)
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .compose(RxUtils.exceptionTransformer())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new DisposableObserver<BaseBean<Object>>() {
+                    @Override
+                    public void onNext(BaseBean<Object> response) {
+                        if (response.isOk()){
+                            String submitJsonData = new Gson().toJson(response.data);
+
+                            groupList.setValue((ArrayList<GroupBean>) response.data);
+
+                        }else {
+                            RxToast.normal(response.getMessage());
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable throwable) {
+                        //关闭对话框
+                        dismissDialog();
+                        if (throwable instanceof ResponseThrowable) {
+                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        }
+                    }
+                    @Override
+                    public void onComplete() {
+                        //关闭对话框
+                        dismissDialog();
+                    }
+                });
+    }
+
+    /**
+     * 获取商品
+     * @param store_id 门店id
+     * @param group_id 群组id
+     */
+    public void getGoodsGroup(String store_id,String group_id){
+
+        model.GOODS_List(store_id,group_id)
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .compose(RxUtils.exceptionTransformer())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new DisposableObserver<BaseBean<Object>>() {
+                    @Override
+                    public void onNext(BaseBean<Object> response) {
+                        if (response.isOk()){
+                            String submitJsonData = new Gson().toJson(response.data);
+
+                            groupList.setValue((ArrayList<GroupBean>) response.data);
+
+                        }else {
+                            RxToast.normal(response.getMessage());
+                        }
+                    }
+                    @Override
+                    public void onError(Throwable throwable) {
+                        //关闭对话框
+                        dismissDialog();
+                        if (throwable instanceof ResponseThrowable) {
+                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        }
+                    }
+                    @Override
+                    public void onComplete() {
+                        //关闭对话框
+                        dismissDialog();
+                    }
+                });
+    }
 }

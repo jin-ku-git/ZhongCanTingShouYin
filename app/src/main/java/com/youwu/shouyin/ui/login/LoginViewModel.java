@@ -4,24 +4,34 @@ import android.app.Application;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.youwu.shouyin.app.AppApplication;
 import com.youwu.shouyin.app.UserUtils;
 import com.youwu.shouyin.data.DemoRepository;
 import com.youwu.shouyin.ui.main.MainActivity;
+import com.youwu.shouyin.utils_view.Constant;
+import com.youwu.shouyin.utils_view.RxToast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.http.BaseBean;
+import me.goldze.mvvmhabit.http.ResponseThrowable;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -86,7 +96,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     });
 
     /**
-     * 网络模拟一个登陆操作
+     * 登陆操作
      **/
     private void login() {
         if (TextUtils.isEmpty(userName.get())) {
@@ -97,32 +107,60 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
             ToastUtils.showShort("请输入密码！");
             return;
         }
-        //RaJava模拟登录
-        addSubscribe(model.login()
+        //跳转到首页
+        startActivity(MainActivity.class);
+        finish();
+
+        model.LOGIN(userName.get(),password.get())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
+                .compose(RxUtils.exceptionTransformer())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
                         showDialog();
                     }
                 })
-                .subscribe(new Consumer<Object>() {
+                .subscribe(new DisposableObserver<BaseBean<Object>>() {
                     @Override
-                    public void accept(Object o) throws Exception {
-                        dismissDialog();
-                        //保存账号密码
-                        model.saveUserName(userName.get());
-                        model.savePassword(password.get());
-                        SimpleDateFormat formater = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-                        String time= formater.format(new Date());
-                        UserUtils.setLogoTime(time);
-                        UserUtils.setLogoName("小花");
-                        //进入DemoActivity页面
-                        startActivity(MainActivity.class);
-                        //关闭页面
-                        finish();
+                    public void onNext(BaseBean response) {
+                        String submitJson = new Gson().toJson(response.data);
+                        if (response.isOk()){
+                            //保存账号密码
+                            model.saveUserName(userName.get());
+                            model.savePassword(password.get());
+
+                            try {
+                                JSONObject arr = new JSONObject(submitJson);
+                                String accessToken = arr.optString("accessToken");//token
+                                String tokenType = arr.optString("tokenType");//token
+                                AppApplication.spUtils.put("accessToken", accessToken);
+                                AppApplication.spUtils.put("tokenType", tokenType);
+
+
+                                //跳转到首页
+                                startActivity(MainActivity.class);
+                                finish();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            RxToast.normal(response.getMessage());
+                        }
                     }
-                }));
+                    @Override
+                    public void onError(Throwable throwable) {
+                        //关闭对话框
+                        dismissDialog();
+                        if (throwable instanceof ResponseThrowable) {
+                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        }
+                    }
+                    @Override
+                    public void onComplete() {
+                        //关闭对话框
+                        dismissDialog();
+                    }
+                });
 
     }
 

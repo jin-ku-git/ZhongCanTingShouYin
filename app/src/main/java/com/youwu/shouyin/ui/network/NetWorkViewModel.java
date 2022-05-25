@@ -67,28 +67,7 @@ public class NetWorkViewModel extends BaseViewModel<DemoRepository> {
                 uc.finishLoadmore.call();
                 return;
             }
-            //模拟网络上拉加载更多
-            model.loadMore()
-                    .compose(RxUtils.schedulersTransformer()) //线程调度
-                    .doOnSubscribe(NetWorkViewModel.this) //请求与ViewModel周期同步
-                    .doOnSubscribe(new Consumer<Disposable>() {
-                        @Override
-                        public void accept(Disposable disposable) throws Exception {
-                            ToastUtils.showShort("上拉加载");
-                        }
-                    })
-                    .subscribe(new Consumer<DemoEntity>() {
-                        @Override
-                        public void accept(DemoEntity entity) throws Exception {
-                            for (DemoEntity.ItemsEntity itemsEntity : entity.getItems()) {
-                                NetWorkItemViewModel itemViewModel = new NetWorkItemViewModel(NetWorkViewModel.this, itemsEntity);
-                                //双向绑定动态添加Item
-                                observableList.add(itemViewModel);
-                            }
-                            //刷新完成收回
-                            uc.finishLoadmore.call();
-                        }
-                    });
+
         }
     });
 

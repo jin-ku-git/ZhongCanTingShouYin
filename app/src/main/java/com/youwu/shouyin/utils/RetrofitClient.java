@@ -3,6 +3,9 @@ package com.youwu.shouyin.utils;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.youwu.shouyin.app.AppApplication;
+import com.youwu.shouyin.app.UserUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -33,7 +36,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by goldze on 2017/5/10.
+ * 2022/05/25
  * RetrofitClient封装单例类, 实现网络请求
  */
 public class RetrofitClient {
@@ -42,7 +45,8 @@ public class RetrofitClient {
     //缓存时间
     private static final int CACHE_TIMEOUT = 10 * 1024 * 1024;
     //服务端根路径
-    public static String baseUrl = "https://www.oschina.net/";
+    public static String baseUrl = "https://saas_test_api.youwuu.com/app/";//测试服务器
+//    public static String baseUrl = "https://saas_test_api.youwuu.com/app";
 
     private static Context mContext = Utils.getContext();
 
@@ -90,9 +94,8 @@ public class RetrofitClient {
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        Request.Builder builder = chain.request().newBuilder()
-                                .header("platform", "platform")
-                                .header("sessionId", "155056366467311249");
+                        Request.Builder builder = chain.request().newBuilder();
+//                                .header("Authorization", AppApplication.spUtils.getString("tokenType")+" "+AppApplication.spUtils.getString("accessToken"));
 
                         Request build = builder.build();
 

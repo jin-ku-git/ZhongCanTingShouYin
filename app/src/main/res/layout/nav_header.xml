@@ -1,48 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:overScrollMode="never"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
             >
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/main_color"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorHeight="4dp"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/main_color"
+                app:tabTextColor="#545454"
+                app:tabIndicator="@drawable/shape_indicator_radius"
+                android:layout_gravity="center"
+                app:tabMinWidth="40dip"
+                app:tabContentStart="20dp"
+                app:tabMaxWidth="00dp"
+                app:tabPaddingStart="10dp"
+                app:tabPaddingEnd="10dp"
+                app:tabRippleColor="@null"
+                >
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="待接单" />
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="待出餐" />
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="退款" />
+
+            </com.google.android.material.tabs.TabLayout>
 
         </LinearLayout>
 
-        <TextView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wm_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:layout_marginTop="@dimen/size_10dp"
+            android:layout_weight="1"
             />
-        <!--头部菜单-->
-        <RelativeLayout
-            android:background="#1391F8"
+
+
+        <TextView
+            android:id="@+id/OneClickOrder"
             android:layout_width="match_parent"
-            android:layout_height="160dp">
-
-            <!--名称-->
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="16dp"
-
-                android:text="初学者-Study"
-                android:textColor="#FFF"
-                android:textSize="16sp" />
-
-        </RelativeLayout>
-
+            android:layout_height="@dimen/size_45dp"
+            android:text="一键接单"
+            android:textSize="@dimen/size_20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/radius_blue_8dp"
+            android:gravity="center"
+            android:layout_marginStart="@dimen/size_60dp"
+            android:layout_marginEnd="@dimen/size_60dp"
+            android:layout_marginBottom="@dimen/size_25dp"
+            android:layout_marginTop="@dimen/size_10dp"
+            />
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+
+
+
+</RelativeLayout>

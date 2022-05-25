@@ -49,6 +49,7 @@ import com.youwu.shouyin.ui.main.adapter.ShoppingRecycleAdapter;
 import com.youwu.shouyin.ui.main.adapter.SouSuoListRecycleAdapter;
 import com.youwu.shouyin.ui.main.bean.CommunityBean;
 import com.youwu.shouyin.ui.main.bean.CouponBean;
+import com.youwu.shouyin.ui.main.bean.GroupBean;
 import com.youwu.shouyin.ui.money.CashierActivity;
 import com.youwu.shouyin.ui.money.RechargeRecordActivity;
 import com.youwu.shouyin.ui.money.SalesDocumentActivity;
@@ -83,7 +84,7 @@ public class NewOrderGoodsActivity extends BaseActivity<ActivityNewOrderGoodsBin
     //分类recyclerveiw的适配器
     private CommunityRecycleAdapter mCommunityRecycleAdapter;
     //定义以CommunityEntityList实体类为对象的数据集合
-    private ArrayList<String> CommunityEntityList = new ArrayList<>();
+    private ArrayList<GroupBean> CommunityEntityList = new ArrayList<>();
 
     //商品recyclerveiw的适配器
     private CommunityListRecycleAdapter mCabinetListRecycleAdapter;
@@ -237,7 +238,9 @@ public class NewOrderGoodsActivity extends BaseActivity<ActivityNewOrderGoodsBin
      */
     private void initCommunit() {
         for (int i=0;i<10;i++){
-            CommunityEntityList.add("营养早餐"+i);
+            GroupBean groupBean=new GroupBean();
+            groupBean.setName("营养早餐"+i);
+            CommunityEntityList.add(groupBean);
         }
         initRecyclerView();
 

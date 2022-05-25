@@ -12,15 +12,11 @@
     </data>
 
     
-    <androidx.drawerlayout.widget.DrawerLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:binding="http://schemas.android.com/apk/res-auto"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+
         <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:binding="http://schemas.android.com/apk/res-auto"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#F4F8FB"
@@ -264,12 +260,12 @@
                         android:layout_centerInParent="true"
                         />
                     <TextView
-                        android:layout_width="@dimen/size_25dp"
-                        android:layout_height="@dimen/size_25dp"
+                        android:layout_width="@dimen/size_20dp"
+                        android:layout_height="@dimen/size_20dp"
                         android:text="3"
                         android:gravity="center"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/size_18dp"
+                        android:textSize="@dimen/size_16dp"
                         android:background="@drawable/bth_yuan_red"
                         android:layout_alignParentRight="true"
                         />
@@ -709,17 +705,5 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <!--滑动导航视图-->
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="@dimen/size_350dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:theme="@style/MenuTextStyle"
-            app:headerLayout="@layout/nav_header"
-            app:itemIconSize="24dp"
-            app:itemIconTint="#000"
-            app:itemTextColor="#000" />
-    </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>

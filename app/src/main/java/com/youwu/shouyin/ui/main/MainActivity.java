@@ -23,11 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
 import com.xuexiang.xui.utils.KeyboardUtils;
+import com.xuexiang.xui.widget.button.SmoothCheckBox;
 import com.youwu.shouyin.BR;
 import com.youwu.shouyin.R;
 import com.youwu.shouyin.app.AppApplication;
 import com.youwu.shouyin.app.AppViewModelFactory;
+import com.youwu.shouyin.app.UserUtils;
 import com.youwu.shouyin.databinding.ActivityDemoBinding;
 import com.youwu.shouyin.jianpan.MyCustKeybords;
 import com.youwu.shouyin.ui.bean.VipBean;
@@ -37,12 +40,18 @@ import com.youwu.shouyin.ui.main.adapter.CommunityRecycleAdapter;
 import com.youwu.shouyin.ui.main.adapter.CouponListRecycleAdapter;
 import com.youwu.shouyin.ui.main.adapter.ShoppingRecycleAdapter;
 import com.youwu.shouyin.ui.main.adapter.SouSuoListRecycleAdapter;
+import com.youwu.shouyin.ui.main.adapter.WMOrderAdapter;
 import com.youwu.shouyin.ui.main.bean.CommunityBean;
 import com.youwu.shouyin.ui.main.bean.CouponBean;
+import com.youwu.shouyin.ui.main.bean.GroupBean;
+import com.youwu.shouyin.ui.main.bean.WMOrderBean;
 import com.youwu.shouyin.ui.money.CashierActivity;
 import com.youwu.shouyin.ui.money.RechargeRecordActivity;
 import com.youwu.shouyin.ui.money.SalesDocumentActivity;
 import com.youwu.shouyin.ui.order_goods.OrderGoodsActivity;
+import com.youwu.shouyin.ui.order_goods.adapter.OrderGoodsAdapter;
+import com.youwu.shouyin.ui.order_goods.bean.OrderGoodsBean;
+import com.youwu.shouyin.ui.order_goods.view.PlaceholderFragment;
 import com.youwu.shouyin.ui.set_up.SetUpActivity;
 import com.youwu.shouyin.ui.vip.AddVipActivity;
 import com.youwu.shouyin.ui.vip.SouSuoVipActivity;
@@ -51,20 +60,30 @@ import com.youwu.shouyin.utils_view.BigDecimalUtils;
 import com.youwu.shouyin.utils_view.DividerItemDecorations;
 import com.youwu.shouyin.utils_view.RxToast;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewpager.widget.ViewPager;
+
 
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.KLog;
+
+import static com.xuexiang.xui.utils.ResUtils.getResources;
 
 /**
  * 首页
@@ -76,7 +95,7 @@ public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewMode
     //分类recyclerveiw的适配器
     private CommunityRecycleAdapter mCommunityRecycleAdapter;
     //定义以CommunityEntityList实体类为对象的数据集合
-    private ArrayList<String> CommunityEntityList = new ArrayList<>();
+    private ArrayList<GroupBean> CommunityEntityList = new ArrayList<>();
 
     //商品recyclerveiw的适配器
     private CommunityListRecycleAdapter mCabinetListRecycleAdapter;
@@ -202,11 +221,22 @@ public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewMode
                         break;
                         //侧边栏
                     case 14:
-                        binding.drawerLayout.openDrawer(GravityCompat.START);
+
+                        showJournalDialog();
 
                         break;
 
                 }
+            }
+        });
+
+        viewModel.groupList.observe(this, new Observer<ArrayList<GroupBean>>() {
+            @Override
+            public void onChanged(ArrayList<GroupBean> groupBeans) {
+                CommunityEntityList.addAll(groupBeans);
+
+                initRecyclerView();
+                viewModel.getGoodsGroup("1","1");
             }
         });
 
@@ -222,11 +252,13 @@ public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewMode
         viewModel.sou_suo_bool.set(false);//默认不显示搜索
         viewModel.vip_bool.set(false);//默认没选择会员
 
-        initDrawerLayout();
+
+
 
         /**
-         * 模拟数据
+         * 获取群组
          */
+        initGoodsGroup();
         initCommunit();
 
         /**
@@ -259,11 +291,142 @@ public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewMode
             }
         });
     }
-    //初始化侧滑栏
-    private void initDrawerLayout() {
-        //获取头部视图
-        View headerView = binding.navView.getHeaderView(0);
+
+
+    private void initGoodsGroup() {
+        viewModel.getGoodsGroup("1");
     }
+
+
+    private TabLayout tabLayout;
+
+
+    RecyclerView wm_recyclerView;
+    WMOrderAdapter wmOrderAdapter;
+    TextView OneClickOrder;//一键接单
+    private ArrayList<WMOrderBean> mWmOrderBeans = new ArrayList<>();
+
+
+
+    /**
+     * 日结弹窗
+     */
+    private void showJournalDialog() {
+
+        final Dialog dialog = new Dialog(this, R.style.BottomDialog);
+
+        //获取屏幕宽高
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int widths = size.x;
+        int height = size.y;
+        //获取界面
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.nav_header, null);
+        //将界面填充到AlertDiaLog容器
+
+        dialog.setContentView(dialogView);
+        ViewGroup.LayoutParams layoutParams = dialogView.getLayoutParams();
+        //设置弹窗宽高
+        layoutParams.width = (int) (widths * 0.3);
+        layoutParams.height = (int) (height);
+
+        //将界面填充到AlertDiaLog容器
+        dialogView.setLayoutParams(layoutParams);
+        dialog.getWindow().setGravity(Gravity.RIGHT);
+        dialog.setCancelable(true);//点击外部消失弹窗
+        dialog.show();
+
+
+        tabLayout = dialogView.findViewById(R.id.tabLayout);
+
+        wm_recyclerView = dialogView.findViewById(R.id.wm_recyclerView);
+
+            initTabData();
+
+
+
+        initWMData();
+        initWMRecyclerView();
+
+
+    }
+
+    private void initWMData() {
+        for (int i=0;i<10;i++){
+            ArrayList<CommunityBean> communityBeans = new ArrayList<>();
+            WMOrderBean orderGoodsBean=new WMOrderBean();
+            orderGoodsBean.setOrder_state("待配货"+i);//订单状态
+            orderGoodsBean.setOrder_state_num(1);//订单状态码
+            orderGoodsBean.setGoods_num("1"+i);//商品价格
+            orderGoodsBean.setCreate_time("2020.03.28 15:17:0"+i);//创建时间
+
+            orderGoodsBean.setPaid_in_prick("16"+i);//实收金额
+
+            orderGoodsBean.setGoods_list(communityBeans);
+
+            for (int j=0;j<5;j++){
+                CommunityBean communityBean=new CommunityBean();
+                communityBean.setCom_name(i+"白菜"+j);
+                communityBean.setCom_number(i+j);
+
+                communityBean.setCom_price(i+"4"+j);
+                communityBean.setCom_img("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1114%2F113020142315%2F201130142315-1-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1656063952&t=3850ff28a63b52f8b670d21835d19ef7");
+                communityBeans.add(communityBean);
+            }
+            mWmOrderBeans.add(orderGoodsBean);
+        }
+    }
+
+    /**
+     * 小程序订单
+     */
+    private void initWMRecyclerView() {
+        //创建adapter
+        wmOrderAdapter = new WMOrderAdapter(this, mWmOrderBeans);
+        //给RecyclerView设置adapter
+        wm_recyclerView.setAdapter(wmOrderAdapter);
+        //设置layoutManager,可以设置显示效果，是线性布局、grid布局，还是瀑布流布局
+
+        //参数是：上下文、列表方向（横向还是纵向）、是否倒叙
+        wm_recyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL));
+        //设置item的分割线
+        if (wm_recyclerView.getItemDecorationCount()==0) {
+            wm_recyclerView.addItemDecoration(new DividerItemDecorations(this, DividerItemDecorations.VERTICAL));
+        }
+
+        wmOrderAdapter.setOnClickListener(new WMOrderAdapter.OnClickListener() {
+            @Override
+            public void onClick(WMOrderBean lists, int position) {
+              RxToast.normal(""+position);
+            }
+        });
+
+    }
+
+    private void initTabData() {
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                //0 待存货 1 待取货 2 已完成
+                RxToast.normal(""+tab.getPosition());
+//                order_status= tab.getPosition();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
+
 
     /**
      * 接收传递的数据
@@ -295,10 +458,7 @@ public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewMode
      * 模拟数据
      */
     private void initCommunit() {
-        for (int i=0;i<10;i++){
-            CommunityEntityList.add("营养早餐"+i);
-        }
-        initRecyclerView();
+
 
         for (int j=0;j<20;j++){
             CommunityBean communityBean=new CommunityBean();
@@ -336,6 +496,12 @@ public class MainActivity extends BaseActivity<ActivityDemoBinding, MainViewMode
         if (binding.recyclerviewCommunity.getItemDecorationCount()==0) {
             binding.recyclerviewCommunity.addItemDecoration(new DividerItemDecorations(this, DividerItemDecorations.VERTICAL));
         }
+        mCommunityRecycleAdapter.setOnScanningListener(new CommunityRecycleAdapter.OnScanningListener() {
+            @Override
+            public void onScanning(GroupBean groupBean) {
+                viewModel.getGoodsGroup("1",groupBean.getId()+"");
+            }
+        });
     }
 
     /**

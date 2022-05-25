@@ -12,17 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.youwu.shouyin.R;
+import com.youwu.shouyin.ui.main.bean.GroupBean;
 
 import java.util.List;
 
 
 public class CommunityRecycleAdapter extends RecyclerView.Adapter<CommunityRecycleAdapter.myViewHodler> {
     private Context context;
-    private List<String> goodsEntityList;
+    private List<GroupBean> goodsEntityList;
     private int currentIndex = 0;
 
     //创建构造函数
-    public CommunityRecycleAdapter(Context context, List<String> goodsEntityList) {
+    public CommunityRecycleAdapter(Context context, List<GroupBean> goodsEntityList) {
         //将传递过来的数据，赋值给本地变量
         this.context = context;//上下文
         this.goodsEntityList = goodsEntityList;//实体类数据ArrayList
@@ -55,7 +56,7 @@ public class CommunityRecycleAdapter extends RecyclerView.Adapter<CommunityRecyc
         //根据点击位置绑定数据
 //        StoreBean.DataBean data = goodsEntityList.get(position);
 //        holder.mItemGoodsImg;
-        holder.text_name.setText(goodsEntityList.get(position));//获取实体类中的name字段并设置
+        holder.text_name.setText(goodsEntityList.get(position).getName());//获取实体类中的name字段并设置
         holder.bindData(goodsEntityList.get(position), position, currentIndex);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +124,7 @@ public class CommunityRecycleAdapter extends RecyclerView.Adapter<CommunityRecyc
         }
 
 
-        public void bindData(String goodsEntity, int position, int currentIndex) {
+        public void bindData(GroupBean goodsEntity, int position, int currentIndex) {
             if (position == currentIndex) {
                 mLayout_all.setBackgroundResource(R.drawable.radius_white_right_10dp);
 
@@ -140,7 +141,7 @@ public class CommunityRecycleAdapter extends RecyclerView.Adapter<CommunityRecyc
 
     //回调
     public interface OnScanningListener {
-        void onScanning(String communityBean);
+        void onScanning(GroupBean groupBean);
     }
 
     public void setOnScanningListener(OnScanningListener listener) {
@@ -161,7 +162,7 @@ public class CommunityRecycleAdapter extends RecyclerView.Adapter<CommunityRecyc
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        public void OnItemClick(View view, String data, int position);
+        public void OnItemClick(View view, GroupBean data, int position);
     }
 
     //需要外部访问，所以需要设置set方法，方便调用

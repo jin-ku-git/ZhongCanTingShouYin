@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import me.goldze.mvvmhabit.http.BaseBean;
 import me.goldze.mvvmhabit.http.BaseResponse;
 
 /**
@@ -39,30 +40,6 @@ public class HttpDataSourceImpl implements HttpDataSource {
         this.apiService = apiService;
     }
 
-    @Override
-    public Observable<Object> login() {
-        return Observable.just(new Object()).delay(2, TimeUnit.SECONDS); //延迟2秒
-    }
-
-    @Override
-    public Observable<DemoEntity> loadMore() {
-        return Observable.create(new ObservableOnSubscribe<DemoEntity>() {
-            @Override
-            public void subscribe(ObservableEmitter<DemoEntity> observableEmitter) throws Exception {
-                DemoEntity entity = new DemoEntity();
-                List<DemoEntity.ItemsEntity> itemsEntities = new ArrayList<>();
-                //模拟一部分假数据
-                for (int i = 0; i < 10; i++) {
-                    DemoEntity.ItemsEntity item = new DemoEntity.ItemsEntity();
-                    item.setId(-1);
-                    item.setName("模拟条目");
-                    itemsEntities.add(item);
-                }
-                entity.setItems(itemsEntities);
-                observableEmitter.onNext(entity);
-            }
-        }).delay(3, TimeUnit.SECONDS); //延迟3秒
-    }
 
     @Override
     public Observable<BaseResponse<DemoEntity>> demoGet() {
@@ -72,5 +49,34 @@ public class HttpDataSourceImpl implements HttpDataSource {
     @Override
     public Observable<BaseResponse<DemoEntity>> demoPost(String catalog) {
         return apiService.demoPost(catalog);
+    }
+
+    /**
+     * 登录
+     * @param tel
+     * @param password
+     * @return
+     */
+    @Override
+    public Observable<BaseBean<Object>> LOGIN(String tel, String password) {
+        return apiService.LOGIN(tel,password);
+    }
+    /**
+     * 获取商品群组
+     * @param store_id 门店群组
+     * @return
+     */
+    @Override
+    public Observable<BaseBean<Object>> GOODS_GROUP(String store_id) {
+        return apiService.GOODS_GROUP();
+    }
+    /**
+     * 获取商品群组
+     * @param store_id 门店群组
+     * @return
+     */
+    @Override
+    public Observable<BaseBean<Object>> GOODS_List(String store_id,String group_id) {
+        return apiService.GOODS_List(store_id,group_id);
     }
 }
